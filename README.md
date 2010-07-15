@@ -8,3 +8,4 @@ See `whatthecommit -h` for usage options, but basically all to get up and runnin
 1. drop into your `$PATH`
 2. run `whatthecommit` or even better try: `git commit -am "$(whatthecommit)"` ;)
 
+PS: Yes, all these messages in the commit log are from `whatthecommit` :)
