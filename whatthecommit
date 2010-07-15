@@ -10,7 +10,7 @@ class WhatTheCommit
     puts "Usage: #{CMD} [-n -o]"
     puts
     puts "Scrapes random commit messages from #{URL}, "
-    puts "useful for the daily: git commit -am `#{CMD}`"
+    puts "useful for the daily: git commit -am \"$(#{CMD})\""
     puts
     puts "Options:"
     puts "  -n, --no-disclaimer   do not append disclaimer"
