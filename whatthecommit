@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby -w
+
+class WhatTheCommit
+  CMD = "whatthecommit"
+  VERSION = "0.9.1"
+  URL = "http://whatthecommit.com/"
+  DISCLAIMER = " (courtesy of #{URL})"
+
+  def usage(exit_code = 0)
+    puts "Usage: #{CMD} [-n -o]"
+    puts
+    puts "Scrapes random commit messages from #{URL}, "
+    puts "useful for the daily: git commit -am `#{CMD}`"
+    puts
+    puts "Options:"
+    puts "  -n, --no-disclaimer   do not append disclaimer"
+    puts "  -o, --open            open #{URL} in your browser (MacOS X only)"
+    puts
+    puts "  -v, --version         show version information and exit"
+    puts "  -h, --help            display this usage and exit"
+    puts
+    
+    exit(exit_code)
+  end
+  
+  def version
+    puts "#{CMD} (#{VERSION}) - random commit message generator (#{URL})"
+    exit 0
+  end
+  
+  def error(msg)
+    STDERR.puts "#{CMD}: [error] #{msg}"
+    usage(1)
+  end
+  
+  def launch_browser; exec "open '#{URL}'" end
+  
+  def print_random_message
+    require 'open-uri'    
+    puts open(URL).select { |e| e =~ /^<p>/ }.first.gsub(/^<p>/, "").gsub("\n", "") + (@show_disclaimer ? DISCLAIMER : '')
+  end
+  
+  def run(*args)
+    @show_disclaimer = true
+
+    case args.first
+    when '--help', '-h'     then usage
+    when '--version', '-v'  then version
+    when '--open', '-o'     then launch_browser
+    when '--no-disclaimer', '-n'
+      @show_disclaimer = false
+    else
+      error("unknown option(s): #{args.first}") unless args.empty?
+    end
+    
+    print_random_message
+  end
+end
+
+WhatTheCommit.new.run(*ARGV)
