@@ -1,15 +1,16 @@
 #!/usr/bin/env ruby -w
 
 class WhatTheCommit
-  VERSION = "0.9.2"
+  VERSION = "0.9.3"
+  CMD = File.basename($0)
   URL = "http://whatthecommit.com/"
   DISCLAIMER = " (courtesy of #{URL})"
 
   def usage(exit_code = 0)
-    puts "Usage: #{$0} [-n -o]"
+    puts "Usage: #{CMD} [-n, -o]"
     puts
     puts "Scrapes random commit messages from #{URL}, "
-    puts "useful for the daily: git commit -am \"$(#{$0})\""
+    puts "useful for the daily: git commit -am \"$(#{CMD})\""
     puts
     puts "Options:"
     puts "  -n, --no-disclaimer   do not append disclaimer"
@@ -23,12 +24,12 @@ class WhatTheCommit
   end
   
   def version
-    puts "#{$0} (#{VERSION}) - random commit message generator (#{URL})"
+    puts "#{CMD} (#{VERSION}) - random commit message generator (#{URL})"
     exit 0
   end
   
   def error(msg)
-    STDERR.puts "#{$0}: [error] #{msg}"
+    STDERR.puts "#{CMD}: [error] #{msg}"
     usage(1)
   end
   
