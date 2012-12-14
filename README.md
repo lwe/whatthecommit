@@ -12,7 +12,7 @@ to the rescue ;)
 
 **How do I install it?** To get up and running as fast as possbile run
 
-    curl http://github.com/lwe/whatthecommit/raw/master/whatthecommit > /usr/local/bin/whatthecommit && chmod 0755 !#:3
+    curl -L http://github.com/lwe/whatthecommit/raw/master/whatthecommit > /usr/local/bin/whatthecommit && chmod 0755 !#:3
 
 **Are there any options?** Sure, check `whatthecommit -h` for usage and options.
 
