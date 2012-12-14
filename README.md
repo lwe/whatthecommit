@@ -8,7 +8,7 @@ FAQ
 
 **Is it useful?** Yeah, sure, I mean it's perfect for those cases where you haven't committed a
 change in ages and feel too important to use `git add -i`, so `git commit -am "$(whatthecommit)"`
-to the rescue ;)
+to the rescue :wink:
 
 **How do I install it?** To get up and running as fast as possbile run
 
