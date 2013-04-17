@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 
 class WhatTheCommit
-  VERSION = "0.9.4"
+  VERSION = "0.9.3"
   CMD = File.basename($0)
   URL = "http://whatthecommit.com/"
   DISCLAIMER = " (courtesy of #{URL})"
@@ -46,7 +46,6 @@ class WhatTheCommit
   end
   
   def run(*args)
-    args = Array(args)
     @show_disclaimer = true
     @iterations = 1
 
