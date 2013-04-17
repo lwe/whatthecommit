@@ -46,9 +46,9 @@ class WhatTheCommit
   def print_random_message
     begin 
       msg = open(URL).select { |e| e =~ /^<p>/ }.first.gsub(/^<p>/, "").gsub("\n", "") + (@show_disclaimer ? DISCLAIMER : '')
-      passed = if @politeness > 0
-        ( @politeness.modulo(1).nonzero? || !msg.match(/(wtf|fuck|damn|shit|suck|hell|ass|bitch|crap|screw|piss)/i) ) &&
-        ( @politeness.modulo(2).nonzero? || open(PROFANITY_CHECK_URL << CGI.escape(msg)).read.include?("false") )
+      passed = if @polite
+        !msg.match(/(wtf|fuck|damn|shit|suck|hell|ass|bitch|crap|screw|piss)/i) &&
+        ( @polite != :extra || open(PROFANITY_CHECK_URL << CGI.escape(msg)).read.include?("false") )
       else
         true
       end
@@ -67,7 +67,7 @@ class WhatTheCommit
     require 'open-uri'    
     require 'cgi'
 
-    @politeness = 0
+    @polite = false
     @iterations = 1
     @show_disclaimer = true
 
@@ -86,9 +86,9 @@ class WhatTheCommit
             10
           end
       when '--polite', '-x'
-        @politeness = 1
+        @polite = :yes
       when '--extra-polite', '-xx'
-        @politeness = 2
+        @polite = :extra
       else
         error("unknown option(s): #{args.first}") unless args.empty?
       end
