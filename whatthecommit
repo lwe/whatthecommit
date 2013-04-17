@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 
 class WhatTheCommit
-  VERSION = "0.9.3"
+  VERSION = "0.9.4"
   CMD = File.basename($0)
   URL = "http://whatthecommit.com/"
   DISCLAIMER = " (courtesy of #{URL})"
@@ -13,11 +13,12 @@ class WhatTheCommit
     puts "useful for the daily: git commit -am \"$(#{CMD})\""
     puts
     puts "Options:"
-    puts "  -n, --no-disclaimer   do not append disclaimer"
-    puts "  -o, --open            open #{URL} in your browser (MacOS X only)"
+    puts "  -n, --no-disclaimer                 do not append disclaimer"
+    puts "  -i [number], --iterations [number]  number of commit messages"
+    puts "  -o, --open                          open #{URL} in your browser (MacOS X only)"
     puts
-    puts "  -v, --version         show version information and exit"
-    puts "  -h, --help            display this usage and exit"
+    puts "  -v, --version                       show version information and exit"
+    puts "  -h, --help                          display this usage and exit"
     puts
     
     exit(exit_code)
@@ -32,6 +33,10 @@ class WhatTheCommit
     STDERR.puts "#{CMD}: [error] #{msg}"
     usage(1)
   end
+
+  def info(msg)
+    STDERR.puts "#{CMD}: [info] #{msg}"
+  end
   
   def launch_browser; exec "open '#{URL}'" end
   
@@ -41,19 +46,32 @@ class WhatTheCommit
   end
   
   def run(*args)
+    args = Array(args)
     @show_disclaimer = true
+    @iterations = 1
 
-    case args.first
-    when '--help', '-h'     then usage
-    when '--version', '-v'  then version
-    when '--open', '-o'     then launch_browser
-    when '--no-disclaimer', '-n'
-      @show_disclaimer = false
-    else
-      error("unknown option(s): #{args.first}") unless args.empty?
+    while arg = args.shift
+      case arg
+      when '--help', '-h'     then usage
+      when '--version', '-v'  then version
+      when '--open', '-o'     then launch_browser
+      when '--no-disclaimer', '-n'
+        @show_disclaimer = false
+      when '--iterations', '-i'
+        @iterations = if args.first && !args.first.include?("-")
+            args.shift.to_i
+          else
+            info("assuming you want 10 iterations..")
+            10
+          end
+      else
+        error("unknown option(s): #{args.first}") unless args.empty?
+      end
     end
-    
-    print_random_message
+
+    @iterations.times do
+      print_random_message
+    end
   end
 end
 
