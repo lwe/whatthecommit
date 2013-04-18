@@ -4,6 +4,7 @@ class WhatTheCommit
   VERSION = "0.9.4"
   CMD = File.basename($0)
   URL = "http://whatthecommit.com/"
+  PROFANITY_CHECK_URL = "http://www.wdyl.com/profanity?q="
   DISCLAIMER = " (courtesy of #{URL})"
 
   def usage(exit_code = 0)
@@ -15,6 +16,8 @@ class WhatTheCommit
     puts "Options:"
     puts "  -n, --no-disclaimer                 do not append disclaimer"
     puts "  -i [number], --iterations [number]  number of commit messages"
+    puts "  -x, --polite                        check for swear words"
+    puts "  -xx, --extra-polite                 additional profanity check by google (wdyl)"
     puts "  -o, --open                          open #{URL} in your browser (MacOS X only)"
     puts
     puts "  -v, --version                       show version information and exit"
@@ -35,19 +38,38 @@ class WhatTheCommit
   end
 
   def info(msg)
-    STDERR.puts "#{CMD}: [info] #{msg}"
+    infos.push "[info] #{msg}"
   end
-  
+
   def launch_browser; exec "open '#{URL}'" end
   
   def print_random_message
-    require 'open-uri'    
-    puts open(URL).select { |e| e =~ /^<p>/ }.first.gsub(/^<p>/, "").gsub("\n", "") + (@show_disclaimer ? DISCLAIMER : '')
+    begin 
+      msg = open(URL).select { |e| e =~ /^<p>/ }.first.gsub(/^<p>/, "").gsub("\n", "") + (@show_disclaimer ? DISCLAIMER : '')
+      passed = if @polite
+        !msg.match(/(wtf|fuck|damn|shit|suck|hell|ass|bitch|crap|screw|piss)/i) &&
+        ( @polite != :extra || open(PROFANITY_CHECK_URL << CGI.escape(msg)).read.include?("false") )
+      else
+        true
+      end
+
+      info("rejected: #{msg}") unless passed
+    rescue
+      # to avoid endless loop if wdyl call fails
+      passed = true
+      info("errored: #{msg}")
+    end until passed
+
+    puts msg
   end
   
   def run(*args)
-    @show_disclaimer = true
+    require 'open-uri'    
+    require 'cgi'
+
+    @polite = false
     @iterations = 1
+    @show_disclaimer = true
 
     while arg = args.shift
       case arg
@@ -60,9 +82,13 @@ class WhatTheCommit
         @iterations = if args.first && !args.first.include?("-")
             args.shift.to_i
           else
-            info("assuming you want 10 iterations..")
+            info("assuming you want 10 iterations.. ;)")
             10
           end
+      when '--polite', '-x'
+        @polite = :yes
+      when '--extra-polite', '-xx'
+        @polite = :extra
       else
         error("unknown option(s): #{args.first}") unless args.empty?
       end
@@ -71,7 +97,19 @@ class WhatTheCommit
     @iterations.times do
       print_random_message
     end
+
+    unless infos.empty?
+      puts "---"
+      infos.each { |info| puts info }
+    end
   end
+
+  private
+
+  def infos
+    @infos ||= []
+  end
+  
 end
 
 WhatTheCommit.new.run(*ARGV)

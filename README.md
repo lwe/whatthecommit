@@ -12,7 +12,8 @@ to the rescue :wink:
 
 **How do I install it?** To get up and running as fast as possbile run
 
-    curl -L http://github.com/lwe/whatthecommit/raw/master/whatthecommit > /usr/local/bin/whatthecommit && chmod 0755 !#:3
+    curl -L https://raw.github.com/dbldots/whatthecommit/master/whatthecommit > /usr/local/bin/whatthecommit
+    chmod 0755 /usr/local/bin/whatthecommit
 
 **Are there any options?** Sure, check `whatthecommit -h` for usage and options.
 
