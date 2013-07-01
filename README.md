@@ -1,7 +1,9 @@
 whatthecommit
 =============
 
-An unoffical command client to fetch a commit message from http://whatthecommit.com/
+An unoffical command client to fetch a commit message from [whatthecommit.com](http://whatthecommit.com/)
+
+> For the sources of [whatthecommit.com](http://whatthecommit.com/) click [here](https://github.com/ngerakines/commitment).
 
 FAQ
 ---
