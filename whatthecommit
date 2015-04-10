@@ -5,7 +5,7 @@ require 'open-uri'
 
 class WhatTheCommit
   VERSION = "1.0.0"
-  URL = "https://raw.githubusercontent.com/ngerakines/commitment/master/commit_messages.txt"
+  URL = "http://whatthecommit.com/index.txt"
 
   attr_reader :disclaimer, :iterations
 
@@ -36,15 +36,10 @@ class WhatTheCommit
       end
 
       opts.on_tail '-v', '--version', 'Show version info and exit' do
-        puts "#{opts.program_name} version #{VERSION} - random commit message generator,"
-        puts "with messages from whatthecommit.com / github.com/ngerakines/commitment"
+        puts "#{opts.program_name} version #{VERSION} - random commit message generator (#{URL})"
         exit
       end
     end
-  end
-
-  def messages
-    @messages ||= open(URL).map { |m| m.strip }.select { |m| m.length > 0 }
   end
 
   def run(*args)
@@ -56,7 +51,7 @@ class WhatTheCommit
       exit 1
     end
 
-    messages.sample(iterations).map { |msg| puts "#{msg} #{disclaimer}".strip }
+    iterations.times { puts "#{open(URL).read.strip} #{disclaimer}".strip }
   end
 end
 
