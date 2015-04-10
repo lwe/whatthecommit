@@ -1,76 +1,62 @@
 #!/usr/bin/env ruby -w
 
+require 'optparse'
+require 'open-uri'
+
 class WhatTheCommit
-  VERSION = "0.9.4"
-  CMD = File.basename($0)
-  URL = "http://whatthecommit.com/"
-  DISCLAIMER = " (courtesy of #{URL})"
+  VERSION = "1.0.0"
+  URL = "https://raw.githubusercontent.com/ngerakines/commitment/master/commit_messages.txt"
 
-  def usage(exit_code = 0)
-    puts "Usage: #{CMD} [-n, -o]"
-    puts
-    puts "Scrapes random commit messages from #{URL}, "
-    puts "useful for the daily: git commit -am \"$(#{CMD})\""
-    puts
-    puts "Options:"
-    puts "  -n, --no-disclaimer                 do not append disclaimer"
-    puts "  -i [number], --iterations [number]  number of commit messages"
-    puts "  -o, --open                          open #{URL} in your browser (MacOS X only)"
-    puts
-    puts "  -v, --version                       show version information and exit"
-    puts "  -h, --help                          display this usage and exit"
-    puts
-    
-    exit(exit_code)
-  end
-  
-  def version
-    puts "#{CMD} (#{VERSION}) - random commit message generator (#{URL})"
-    exit 0
-  end
-  
-  def error(msg)
-    STDERR.puts "#{CMD}: [error] #{msg}"
-    usage(1)
-  end
+  attr_reader :disclaimer, :iterations
 
-  def info(msg)
-    STDERR.puts "#{CMD}: [info] #{msg}"
-  end
-  
-  def launch_browser; exec "open '#{URL}'" end
-  
-  def print_random_message
-    require 'open-uri'    
-    puts open(URL).select { |e| e =~ /^<p>/ }.first.gsub(/^<p>/, "").gsub("\n", "") + (@show_disclaimer ? DISCLAIMER : '')
-  end
-  
-  def run(*args)
-    @show_disclaimer = true
+  def parser
+    @disclaimer = "(© whatthecommit.com)"
     @iterations = 1
 
-    while arg = args.shift
-      case arg
-      when '--help', '-h'     then usage
-      when '--version', '-v'  then version
-      when '--open', '-o'     then launch_browser
-      when '--no-disclaimer', '-n'
-        @show_disclaimer = false
-      when '--iterations', '-i'
-        @iterations = if args.first && !args.first.include?("-")
-            args.shift.to_i
-          else
-            info("assuming you want 10 iterations..")
-            10
-          end
-      else
-        error("unknown option(s): #{args.first}") unless args.empty?
+    @parser ||= OptionParser.new do |opts|
+      opts.banner = "usage: #{opts.program_name} [--no-disclaimer] [--iterations=<number>]"
+
+      opts.separator ""
+      opts.separator "Scrapes random commit messages from whatthecommit.com, very very useful"
+      opts.separator "for the daily: git add -A && git commit -m \"$(#{opts.program_name})\""
+      opts.separator ""
+
+      opts.on '-n', '--no-disclaimer', 'Do not append / print the disclaimer' do
+        @disclaimer = ''
+      end
+
+      opts.on '-i', '--iterations N', Integer, 'Number of random commit messages to print' do |n|
+        raise OptionParser::ParseError.new("iterations must be > 0") if n <= 0
+        @iterations = n
+      end
+
+      opts.on_tail '-h', '--help', 'Show this message' do
+        puts opts
+        exit
+      end
+
+      opts.on_tail '-v', '--version', 'Show version info and exit' do
+        puts "#{opts.program_name} version #{VERSION} - random commit message generator,"
+        puts "with messages from whatthecommit.com / github.com/ngerakines/commitment"
+        exit
       end
     end
+  end
 
-    @iterations.times do
-      print_random_message
+  def messages
+    @messages ||= open(URL).map { |m| m.strip }.select { |m| m.length > 0 }
+  end
+
+  def run(*args)
+    begin
+      parser.parse!(args)
+    rescue OptionParser::ParseError => e
+      STDERR.puts e.message.capitalize
+      STDERR.puts parser.banner
+      exit 1
     end
+
+    messages.sample(iterations).map { |msg| puts "#{msg} #{disclaimer}".strip }
   end
 end
 
