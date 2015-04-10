@@ -39,9 +39,10 @@ function whatthecommit() {
 }
 ```
 
-Or also check the following solution: https://github.com/ngerakines/commitment/issues/69#issuecomment-91053061
+...or how about a git alias?
 
 ```bash
+# From https://github.com/ngerakines/commitment/issues/69#issuecomment-91053061
 git config --global alias.yolo '!git add -A && git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 ```
 
