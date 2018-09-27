@@ -20,7 +20,11 @@ haven't committed a change in ages and feel too important to use
 
 To get up and running as fast as possbile run
 
-    curl -L http://github.com/lwe/whatthecommit/raw/master/whatthecommit > /usr/local/bin/whatthecommit && chmod 0755 !#:3
+```bash
+# installs to /usr/local/bin/whatthecommit
+curl -L https://github.com/lwe/whatthecommit/raw/master/whatthecommit >/usr/local/bin/whatthecommit
+chmod 0755 /usr/local/bin/whatthecommit
+```
 
 #### Are there any options?
 
@@ -29,13 +33,13 @@ Sure, check `whatthecommit -h` for usage and options.
 #### Do I need this? / Alternatives
 
 No, [whatthecommit.com][wtc] provides since some time a
-plain text interface at http://whatthecommit.com/index.txt - so a good
+plain text interface at https://whatthecommit.com/index.txt - so a good
 alternative would be to create something like:
 
 ```bash
 # .bashrc / .zshrc or whatever
 function whatthecommit() {
-  curl whatthecommit.com/index.txt
+  curl --silent --fail https://whatthecommit.com/index.txt
 }
 ```
 
@@ -43,9 +47,9 @@ function whatthecommit() {
 
 ```bash
 # From https://github.com/ngerakines/commitment/issues/69#issuecomment-91053061
-git config --global alias.yolo '!git add -A && git commit -m "$(curl -s whatthecommit.com/index.txt)"'
+git config --global alias.yolo '!git add -A && git commit -m "$(curl --silent --fail https://whatthecommit.com/index.txt)"'
 ```
 
 Thanks to [m13253](https://github.com/m13253) for the index.txt trick.
 
-[wtc]: http://whatthecommit.com/
+[wtc]: https://whatthecommit.com/
