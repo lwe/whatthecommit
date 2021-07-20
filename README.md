@@ -33,13 +33,13 @@ Sure, check `whatthecommit -h` for usage and options.
 #### Do I need this? / Alternatives
 
 No, [whatthecommit.com][wtc] provides since some time a
-plain text interface at https://whatthecommit.com/index.txt - so a good
+plain text interface at http://whatthecommit.com/index.txt - so a good
 alternative would be to create something like:
 
 ```bash
 # .bashrc / .zshrc or whatever
 function whatthecommit() {
-  curl --silent --fail https://whatthecommit.com/index.txt
+  curl --silent --fail http://whatthecommit.com/index.txt
 }
 ```
 
@@ -47,9 +47,9 @@ function whatthecommit() {
 
 ```bash
 # From https://github.com/ngerakines/commitment/issues/69#issuecomment-91053061
-git config --global alias.yolo '!git add -A && git commit -m "$(curl --silent --fail https://whatthecommit.com/index.txt)"'
+git config --global alias.yolo '!git add -A && git commit -m "$(curl --silent --fail http://whatthecommit.com/index.txt)"'
 ```
 
 Thanks to [m13253](https://github.com/m13253) for the index.txt trick.
 
-[wtc]: https://whatthecommit.com/
+[wtc]: http://whatthecommit.com/

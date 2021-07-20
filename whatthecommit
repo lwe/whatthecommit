@@ -5,7 +5,7 @@ require 'open-uri'
 
 class WhatTheCommit
   VERSION = "1.1.0"
-  URL = "https://whatthecommit.com/index.txt"
+  URL = "http://whatthecommit.com/index.txt"
 
   attr_reader :disclaimer, :iterations
 
